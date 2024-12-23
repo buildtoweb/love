@@ -12,7 +12,7 @@ function Door(day) {
     node.appendChild(innerNode);
     innerNode.innerHTML = day;
     innerNode.href = "#";
-    const linkedDoors = [19]; // Türen, die Links sind
+    const linkedDoors = [24]; // Türen, die Links sind
 
     if (currentDate.getMonth() + 1 < 12 || currentDate.getDate() < day) {
       // Türen für zukünftige Tage sperren
@@ -22,7 +22,7 @@ function Door(day) {
       };
     } else if (linkedDoors.includes(day)) {
       innerNode.href =
-        "https://www.loom.com/share/7c0367fca424455db30fb7d03300c044?sid=398f0a4a-5192-474b-a60a-d5e89b5c94bb"; // Link-Ziel hier ändern
+        "https://www.loom.com/share/c1b72f206ccc4f8587fccc6eb2dddf4a?sid=28d526ab-d9fa-4f6a-8b97-539de588d242"; // Link-Ziel hier ändern
       innerNode.target = "_blank"; // Öffnet in neuem Tab
     } else {
       const adventMessage = this.adventMessage;

@@ -56,5 +56,7 @@ const messages = [
   [
     "Auflösung von gestern: Der Weihnachtsmann 🎅 \nNun kommen wir auf dem Finalen Tag dieses Kalenders zu. Den 24.! \nMorgen erwartet dich das letzte Video und wundervolle Weihnachtsgrüße von mir! \nSchönen Tag wünsche ich dir mit deinen Bres in der Therme🧖🏻‍♀️",
   ],
-  ["24"],
+  [
+    "Link: https://www.loom.com/share/c1b72f206ccc4f8587fccc6eb2dddf4a?sid=28d526ab-d9fa-4f6a-8b97-539de588d242",
+  ],
 ];
