@@ -1,85 +1,80 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="robots" content="noindex">
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="https://cdn-icons-png.flaticon.com/128/9484/9484251.png"
+    />
     <title>I love you</title>
 
-<style>
-body {
-  font-family: monospace;
-  background-color: black;
-  color: white;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2em;
-}
+    <style>
+      body {
+        font-family: "Courier New", Courier, monospace;
+        font-size: 1rem;
+        font-weight: 100;
+        background-color: rgb(26, 26, 26);
+        color: white;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2em;
+        white-space: pre-line;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 id="typewriter"></h1>
 
-</style>
+    <script>
+      var i = 0;
+      var j = 0;
+      var txt = `Hallo Bebi, 
 
-</head>
-<body>
+  Ich muss mich noch für deinen Brief bedanken und möchte dir ebenfalls eine Freude bereiten :)
+  
+  Es hat mich unglaublich gefreut diese Überraschung zu erleben und bin dir sehr dankbar, dass du so eine tolle Freundin bist (man munkelt sogar, du seiest die beste🤭).
 
-<h1 id="typewriter"></h1>
+  Du liest diese Nachricht gerade auf deiner Rückfahrt von der Maturareise. 
+  Ich hoffe du hattest eine tolle Zeit mit deinen Freunden 🥰.
+  Die beste Zeit wirst du aber noch immer mit mir auf Urlaub haben 😘. 
+ 
+  Du weißt nicht wie viel ich dich vermisst habe. 
+  Ich sage solche Dinge nicht oft, aber dennoch solltest du wissen das sich eine Zeit ohne dich extrem einsam für mich anfühlt. 
 
-<script>
-    var i = 0;
-    var j = 0;
-    var txt = `Hallo Bebi, 
+  Ich bin so dankbar, dass es dich gibt. Dass ich jemanden gefunden habe, der mich versteht, unterstützt und mit dem ich gleichzeitig so viel lachen kann.
 
-    Ich wünsche dir in erster Linie viel spaß bei deiner Reise und deinem Aufenthalt in unserem Heimatsland. 
+  Ich freue mich, dich wieder in die Arme zu nehmen. 
+  Ich will dir erzählen, was ich gemacht habe, und alles über deine Reise hören. 
 
-    Leider bin ich nicht dazugekommen dir etwas auszudrucken daher werde ich es auf meine Art machen :) 
-    
+  Bis bald, mein Lieblingsmensch.
+  Ich liebe dich. 💖
 
-    Ich bin dir sehr dankbar für die Zeit die wir gemeinsam auf unserem kurz Urlaub verbringen konnten. 
-
-    Du bist der erste und einzige Mensch der so viele und schöne Erinnerungen in meiner Gallerie hinterlässt und es ist einfach wunderschön daran zu denken das du in meinem Leben bist. 
-   
-    Wie viele haben sowas was wir haben? 
-    …Ein Wochenende mitten während der Schulzeit am Strand in einem 4 Sterne Hotel… nur wir 2 am Balkon während die Sonne untergeht (und ich dich von hinten durchnehme). 
-   
-    Und ja keine Sorge wir werden schon noch ins Meer gehen es war nur etwas kalt ;) 
-    
-
-    
-    Du gibts mich niamals her. 
-    Das erfreut mein Herz wenn ich es höre. 
-    Ich werde es auch niemals tun. 
-
-    Danke das es dich gibt und ich mit dir Sachen erleben darf die ich vorher nicht erleben konnte.
-    
-
-    
-    Den Brief bekommst du noch auf Papier mit einem 2ten Teil.
-    
-    Nächste Überracschung folgt auf dieser Seite demnächst.
     
     `; /* Der Text */
-    var speed = 70; /* Die Geschwindigkeit/Schreibverzögerung in Millisekunden */
-    var lines = txt.split('\n');
-    
-    function typeWriter() {
-  if (i < lines[j].length) {
-    document.getElementById("typewriter").innerHTML += lines[j].charAt(i);
-    i++;
-    window.scrollTo(0,document.body.scrollHeight);
-    setTimeout(typeWriter, speed);
-  } else if (j < lines.length - 1) {
-    document.getElementById("typewriter").innerHTML += '<br>';
-    i = 0;
-    j++;
-    window.scrollTo(0,document.body.scrollHeight);
-    setTimeout(typeWriter, speed);
-  }
-}
-    
-    typeWriter();
-    </script>
+      var speed = 70; /* Die Geschwindigkeit/Schreibverzögerung in Millisekunden */
+      var lines = txt.split("\n");
 
-</body>
+      function typeWriter() {
+        if (i < lines[j].length) {
+          document.getElementById("typewriter").innerHTML += lines[j].charAt(i);
+          i++;
+          window.scrollTo(0, document.body.scrollHeight);
+          setTimeout(typeWriter, speed);
+        } else if (j < lines.length - 1) {
+          document.getElementById("typewriter").innerHTML += "<br>";
+          i = 0;
+          j++;
+          window.scrollTo(0, document.body.scrollHeight);
+          setTimeout(typeWriter, speed);
+        }
+      }
+
+      typeWriter();
+    </script>
+  </body>
 </html>
