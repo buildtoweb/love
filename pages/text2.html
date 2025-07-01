@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="robots" content="noindex">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
     <title>I love you</title>
 
     <style>
-      @import url('https://fonts.googleapis.com/css?family=Roboto+Mono:100&display=swap');
-      html, body {
-        font-family: 'Roboto Mono', monospace;
+      @import url("https://fonts.googleapis.com/css?family=Roboto+Mono:100&display=swap");
+      html,
+      body {
+        font-family: "Roboto Mono", monospace;
         background: #212121;
         height: 100%;
       }
@@ -24,7 +25,7 @@
       .text {
         font-weight: 100;
         font-size: 28px;
-        color: #FAFAFA;
+        color: #fafafa;
       }
       .dud {
         color: #757575;
@@ -36,99 +37,97 @@
       <div class="text"></div>
     </div>
     <script>
-    document.addEventListener('DOMContentLoaded', (event) => {
-
+      document.addEventListener("DOMContentLoaded", (event) => {
         class TextScramble {
-        constructor(el) {
-            this.el = el
-            this.chars = '!<>-_\\/[]{}—=+*^?#_______'
-            this.update = this.update.bind(this)
-        }
-        setText(newText) {
-            const oldText = this.el.innerText
-            const length = Math.max(oldText.length, newText.length)
-            const promise = new Promise((resolve) => this.resolve = resolve)
-            this.queue = []
+          constructor(el) {
+            this.el = el;
+            this.chars = "!<>-_\\/[]{}—=+*^?#_______";
+            this.update = this.update.bind(this);
+          }
+          setText(newText) {
+            const oldText = this.el.innerText;
+            const length = Math.max(oldText.length, newText.length);
+            const promise = new Promise((resolve) => (this.resolve = resolve));
+            this.queue = [];
             for (let i = 0; i < length; i++) {
-            const from = oldText[i] || ''
-            const to = newText[i] || ''
-            const start = Math.floor(Math.random() * 20)  // Schnelleres Scrambling
-            const end = start + Math.floor(Math.random() * 20)  // Schnelleres Scrambling
-            this.queue.push({ from, to, start, end })
+              const from = oldText[i] || "";
+              const to = newText[i] || "";
+              const start = Math.floor(Math.random() * 20); // Schnelleres Scrambling
+              const end = start + Math.floor(Math.random() * 20); // Schnelleres Scrambling
+              this.queue.push({ from, to, start, end });
             }
-            cancelAnimationFrame(this.frameRequest)
-            this.frame = 0
-            this.update()
-            return promise
-        }
-        update() {
-            let output = ''
-            let complete = 0
+            cancelAnimationFrame(this.frameRequest);
+            this.frame = 0;
+            this.update();
+            return promise;
+          }
+          update() {
+            let output = "";
+            let complete = 0;
             for (let i = 0, n = this.queue.length; i < n; i++) {
-            let { from, to, start, end, char } = this.queue[i]
-            if (this.frame >= end) {
-                complete++
-                output += to
-            } else if (this.frame >= start) {
+              let { from, to, start, end, char } = this.queue[i];
+              if (this.frame >= end) {
+                complete++;
+                output += to;
+              } else if (this.frame >= start) {
                 if (!char || Math.random() < 0.28) {
-                char = this.randomChar()
-                this.queue[i].char = char
+                  char = this.randomChar();
+                  this.queue[i].char = char;
                 }
-                output += `<span class="dud">${char}</span>`
-            } else {
-                output += from
+                output += `<span class="dud">${char}</span>`;
+              } else {
+                output += from;
+              }
             }
-            }
-            this.el.innerHTML = output
+            this.el.innerHTML = output;
             if (complete === this.queue.length) {
-            this.resolve()
+              this.resolve();
             } else {
-            this.frameRequest = requestAnimationFrame(this.update)
-            this.frame++
+              this.frameRequest = requestAnimationFrame(this.update);
+              this.frame++;
             }
-        }
-        randomChar() {
-            return this.chars[Math.floor(Math.random() * this.chars.length)]
-        }
+          }
+          randomChar() {
+            return this.chars[Math.floor(Math.random() * this.chars.length)];
+          }
         }
 
         // ——————————————————————————————————————————————————
 
         const phrases = [
-        'Bonuskapitel: Kapitel 9 von 9',
-        '"Adis Dankbarkeit und Liebe"',
-        'Liebe Sabsi,',
-        'Ich sitze hier und denke an unsere Tage in Baška.',
-        'Jedes Bild, das du gemalt hast, ist eine Erinnerung an diese Momente.',
-        'Ich bin dankbar für diese Reise.',
-        'Ich habe dich nicht nur als meine Freundin, sondern auch als meine Reisegefährtin und mein Abenteuerpartner.',
-        'Wenn ich die Möglichkeit hätte, diese Reise noch einmal zu machen, würde ich nichts ändern.',
-        'Nun, vielleicht nur eine Sache...',
-        'Ich würde jeden Moment nutzen, um dich zu küssen, dich zu umarmen und dir zu zeigen, wie sehr du mir bedeutest.',
-        'Jeder Tag, jeder Moment mit dir ist ein Geschenk, und ich freue mich auf viele weitere Abenteuer mit dir.',
-        'Ich hoffe das dir  !<>-\/[]{(unbekannt)!<>-_\\/  gefallen hat.',
-        'Mit all meiner Liebe,',
-        'Adi'
-        ]
+          "Bonuskapitel: Kapitel 9 von 9",
+          '"Adis Dankbarkeit und Liebe"',
+          "Liebe Sabsi,",
+          "Ich sitze hier und denke an unsere Tage in Baška.",
+          "Jedes Bild, das du gemalt hast, ist eine Erinnerung an diese Momente.",
+          "Ich bin dankbar für diese Reise.",
+          "Ich habe dich nicht nur als meine Freundin, sondern auch als meine Reisegefährtin und mein Abenteuerpartner.",
+          "Wenn ich die Möglichkeit hätte, diese Reise noch einmal zu machen, würde ich nichts ändern.",
+          "Nun, vielleicht nur eine Sache...",
+          "Ich würde jeden Moment nutzen, um dich zu küssen, dich zu umarmen und dir zu zeigen, wie sehr du mir bedeutest.",
+          "Jeder Tag, jeder Moment mit dir ist ein Geschenk, und ich freue mich auf viele weitere Abenteuer mit dir.",
+          "Ich hoffe das dir  !<>-\/[]{(unbekannt)!<>-_\\/  gefallen hat.",
+          "Mit all meiner Liebe,",
+          "Adi",
+        ];
 
-        const el = document.querySelector('.text')
-        const fx = new TextScramble(el)
+        const el = document.querySelector(".text");
+        const fx = new TextScramble(el);
 
-        let counter = 0
+        let counter = 0;
         const next = () => {
-        if (counter < phrases.length) {
+          if (counter < phrases.length) {
             fx.setText(phrases[counter]).then(() => {
-            setTimeout(next, 3000) //längere Dauer des Textes
-            })
-            counter++
-        } else {
-            fx.setText('❤')  // Zeigt ein Herz am Ende
-        }
-        }
+              setTimeout(next, 3000); //längere Dauer des Textes
+            });
+            counter++;
+          } else {
+            fx.setText("❤"); // Zeigt ein Herz am Ende
+          }
+        };
 
-        next()
-
-    });
+        next();
+      });
     </script>
   </body>
 </html>

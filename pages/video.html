@@ -1,68 +1,69 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="robots" content="noindex">
-  <title>I love you</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <title>I love you</title>
 
-<style>
-body {
-  background-color: black;
-  margin: 0;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  color: white;
-  font-family: Arial, sans-serif;
-}
+    <style>
+      body {
+        background-color: black;
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        color: white;
+        font-family: Arial, sans-serif;
+      }
 
-h1 {
-  margin-bottom: 20px;
-  font-size: 20px;
-}
+      h1 {
+        margin-bottom: 20px;
+        font-size: 20px;
+      }
 
-video {
-  max-width: 100%;
-  max-height: 70%;
-}
+      video {
+        max-width: 100%;
+        max-height: 70%;
+      }
 
-.button {
-  display: inline-block;
-  background-color: #008CBA; /* Blue */
-  border: none;
-  border-radius: 15px;
-  color: white;
-  padding: 10px 10px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  cursor: pointer;
-  transition-duration: 0.4s;
-  margin-top: 10px;
-}
+      .button {
+        display: inline-block;
+        background-color: #008cba; /* Blue */
+        border: none;
+        border-radius: 15px;
+        color: white;
+        padding: 10px 10px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        transition-duration: 0.4s;
+        margin-top: 10px;
+      }
 
-.button:hover {
-  background-color: white; 
-  color: black; 
-}
-</style>
-</head>
-<body>
+      .button:hover {
+        background-color: white;
+        color: black;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>
+      Unser Urlaub ❤️ <br />
+      Bin jetzt richtiger Tiktok profi 😂
+    </h1>
 
-<h1>Unser Urlaub ❤️ <br> Bin jetzt richtiger Tiktok profi 😂</h1>
+    <video id="myVideo" controls>
+      <source src="video.mov" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
 
-<video id="myVideo" controls>
-  <source src="video.mov" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
-
-<a href="movie.mp4" download class="button">Download Video <3</a>
-
-</body>
+    <a href="movie.mp4" download class="button">Download Video <3</a>
+  </body>
 </html>

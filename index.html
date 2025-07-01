@@ -3,7 +3,10 @@
 <html lang="de">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
     <meta name="robots" content="noindex" />
     <link
       rel="icon"
@@ -14,7 +17,6 @@
 
     <meta property="og:title" content="Bebi's Dashboard" />
     <meta property="og:description" content="1 ungelesene Nachricht" />
-    <meta property="og:image" content="img/bild.jpeg" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://paxdii.github.io/love/" />
     <style>
@@ -27,6 +29,7 @@
         justify-content: center;
         align-items: center;
         text-align: center;
+        overflow: hidden;
       }
       input {
         padding: 1em;
@@ -69,6 +72,13 @@
           alert("Falsches Passwort!");
         }
       }
+      document
+        .getElementById("password")
+        .addEventListener("keydown", function (event) {
+          if (event.key === "Enter") {
+            checkPassword();
+          }
+        });
     </script>
   </body>
 </html>
