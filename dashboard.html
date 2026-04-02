@@ -756,6 +756,11 @@
     <!--  JAVASCRIPT                                    -->
     <!-- ══════════════════════════════════════════════ -->
     <script>
+      // ── Auth guard ────────────────────────────────────
+      if (localStorage.getItem('love_auth') !== '1') {
+        window.location.replace('index.html');
+      }
+
       // ── Paris schedule data ──────────────────────────
       // All times are Paris local (CEST = UTC+2 in April)
       const DAY_LABELS = [

@@ -108,6 +108,7 @@
 
     <script src="messages-data.js"></script>
     <script>
+      if (localStorage.getItem('love_auth') !== '1') window.location.replace('../index.html');
       function formatDate(dateStr) {
         return new Date(dateStr).toLocaleDateString('de-AT', {
           day: 'numeric', month: 'long', year: 'numeric'

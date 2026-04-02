@@ -158,6 +158,11 @@
     </div>
 
     <script>
+      // Auto-redirect if already logged in
+      if (localStorage.getItem('love_auth') === '1') {
+        window.location.replace('dashboard.html');
+      }
+
       function loginApp() {
         return {
           password: '',
@@ -165,6 +170,7 @@
           error:    '',
           login() {
             if (this.password === 'slowenien') {
+              localStorage.setItem('love_auth', '1');
               window.location.href = 'dashboard.html';
             } else {
               this.error    = 'Falsches Passwort 💔';

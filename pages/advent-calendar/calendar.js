@@ -1,3 +1,5 @@
+if (localStorage.getItem('love_auth') !== '1') window.location.replace('../../index.html');
+
 const adventDoors  = document.getElementById('adventDoors');
 const modalOverlay = document.getElementById('modalOverlay');
 const modalDay     = document.getElementById('modalDay');
