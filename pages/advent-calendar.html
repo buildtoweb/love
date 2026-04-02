@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <link rel="icon" type="image/x-icon" href="https://cdn-icons-png.flaticon.com/128/9484/9484251.png" />
+    <title>Adventkalender 🎄</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+    <style>
+      html, body {
+        margin: 0; padding: 0; height: 100%;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        box-sizing: border-box;
+        background-color: #05030a;
+        color: white;
+      }
+      *, *:before, *:after { box-sizing: inherit; }
+
+      @keyframes blob {
+        0%   { transform: translate(0,0) scale(1); }
+        33%  { transform: translate(24px,-38px) scale(1.08); }
+        66%  { transform: translate(-16px,16px) scale(0.94); }
+        100% { transform: translate(0,0) scale(1); }
+      }
+      @keyframes float {
+        0%,100% { transform: translateY(0); }
+        50%     { transform: translateY(-6px); }
+      }
+      @keyframes fadeIn {
+        from { opacity:0; transform:translateY(10px); }
+        to   { opacity:1; transform:translateY(0); }
+      }
+
+      .blob { position:fixed; border-radius:50%; pointer-events:none; z-index:0; }
+      .blob-1 { width:440px; height:440px; top:-120px; right:-100px; background:radial-gradient(circle,#be185d,transparent 66%); opacity:.11; animation:blob 9s ease-in-out infinite; }
+      .blob-2 { width:360px; height:360px; bottom:-100px; left:-100px; background:radial-gradient(circle,#4338ca,transparent 66%); opacity:.09; animation:blob 9s ease-in-out infinite 2.5s; }
+      .blob-3 { width:280px; height:280px; top:40%; left:30%; background:radial-gradient(circle,#db2777,transparent 66%); opacity:.06; animation:blob 9s ease-in-out infinite 5s; }
+
+      /* Layout */
+      .wrapper {
+        position:relative; z-index:1;
+        min-height:100vh;
+        display:flex; flex-direction:column; align-items:center;
+        padding: 2.5rem 1rem 3rem;
+      }
+
+      /* Back link */
+      .back-link {
+        display:inline-flex; align-items:center; gap:.4rem;
+        padding:.55rem 1rem;
+        border-radius:.75rem;
+        background:rgba(255,255,255,.06);
+        border:1px solid rgba(255,255,255,.1);
+        color:rgba(255,255,255,.5);
+        text-decoration:none; font-size:.8rem;
+        margin-bottom:2rem;
+        transition:all .22s cubic-bezier(.16,1,.3,1);
+      }
+      .back-link:hover { background:rgba(255,255,255,.1); color:rgba(255,255,255,.8); transform:translateY(-1px); }
+
+      /* Header */
+      .header { text-align:center; margin-bottom:2.5rem; animation:fadeIn .5s ease-out both; }
+      .header-icon { font-size:3rem; display:inline-block; animation:float 4.5s ease-in-out infinite; margin-bottom:.75rem; }
+      .header-title {
+        font-family:'Cormorant Garamond',serif; font-weight:500;
+        font-size:clamp(1.8rem,4vw,2.6rem);
+        background:linear-gradient(135deg,#fb7185,#f472b6,#e879f9);
+        -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+        margin:0 0 .4rem;
+      }
+      .header-sub { color:rgba(255,255,255,.32); font-size:.8rem; letter-spacing:.12em; text-transform:uppercase; }
+
+      /* Grid */
+      #adventDoors {
+        display:grid;
+        grid-template-columns:repeat(4,1fr);
+        gap:10px;
+        width:100%; max-width:420px;
+        list-style:none; padding:0; margin:0 auto;
+        animation:fadeIn .6s ease-out .1s both;
+      }
+      #adventDoors li { position:relative; padding-top:100%; }
+      #adventDoors li a {
+        position:absolute; top:0; left:0; width:100%; height:100%;
+        display:flex; flex-direction:column; justify-content:center; align-items:center;
+        background:rgba(255,255,255,.05);
+        backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+        border:1px solid rgba(255,255,255,.09);
+        border-radius:14px;
+        color:rgba(255,255,255,.75);
+        font-size:1.3rem; font-weight:600;
+        text-decoration:none;
+        transition:all .22s cubic-bezier(.16,1,.3,1);
+      }
+      #adventDoors li a:not(.disabled):hover {
+        background:rgba(255,255,255,.1);
+        border-color:rgba(251,113,133,.4);
+        color:#fb7185;
+        transform:translateY(-2px);
+        box-shadow:0 8px 24px rgba(244,63,94,.2);
+      }
+      #adventDoors li a:not(.disabled):active { transform:scale(.97); }
+      #adventDoors li a.disabled {
+        background:rgba(255,255,255,.025);
+        border-color:rgba(255,255,255,.05);
+        color:rgba(255,255,255,.18);
+        cursor:not-allowed;
+      }
+      #adventDoors li a.opened {
+        background:rgba(251,113,133,.1);
+        border-color:rgba(251,113,133,.3);
+        color:#fb7185;
+      }
+
+      /* Modal */
+      .modal-overlay {
+        display:none; position:fixed; inset:0; z-index:50;
+        align-items:flex-end; justify-content:center;
+        background:rgba(0,0,0,.72);
+        backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+      }
+      .modal-overlay.open { display:flex; animation:fadeIn .22s ease-out; }
+      .modal-sheet {
+        background:#0c0917;
+        border:1px solid rgba(255,255,255,.1);
+        border-radius:24px 24px 0 0;
+        width:100%; max-width:500px;
+        max-height:70dvh;
+        padding:1.75rem 1.75rem 2.5rem;
+        display:flex; flex-direction:column; gap:1.1rem;
+        transform:translateY(100%);
+        transition:transform .3s cubic-bezier(.16,1,.3,1);
+        overflow-y:auto;
+      }
+      .modal-overlay.open .modal-sheet { transform:translateY(0); }
+      .modal-handle { width:36px; height:3px; border-radius:99px; background:rgba(255,255,255,.18); margin:0 auto -.2rem; }
+      .modal-day { font-size:.7rem; text-transform:uppercase; letter-spacing:.12em; color:#fb7185; font-weight:600; }
+      .modal-text {
+        font-family:'Cormorant Garamond',serif;
+        font-size:clamp(1.05rem,3.5vw,1.3rem);
+        line-height:1.85; color:rgba(255,255,255,.82);
+        white-space:pre-wrap; word-break:break-word;
+      }
+      .modal-text a { color:#a5b4fc; }
+      .modal-close {
+        display:inline-flex; align-items:center; justify-content:center; gap:.4rem;
+        padding:.65rem 1.3rem; border-radius:.75rem;
+        background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.1);
+        color:rgba(255,255,255,.55); font-size:.82rem; cursor:pointer;
+        transition:all .2s ease; align-self:flex-start;
+      }
+      .modal-close:hover { background:rgba(255,255,255,.12); color:rgba(255,255,255,.8); }
+      .modal-sheet::-webkit-scrollbar { width:3px; }
+      .modal-sheet::-webkit-scrollbar-track { background:transparent; }
+      .modal-sheet::-webkit-scrollbar-thumb { background:rgba(255,255,255,.14); border-radius:4px; }
+    </style>
+  </head>
+
+  <body>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
+    <div class="wrapper">
+      <a href="../dashboard.html" class="back-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+        </svg>
+        Dashboard
+      </a>
+
+      <header class="header">
+        <div class="header-icon">🎄</div>
+        <h1 class="header-title">Adventkalender</h1>
+        <p class="header-sub">24 Türchen voller Liebe</p>
+      </header>
+
+      <ul id="adventDoors"></ul>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true">
+      <div class="modal-sheet" id="modalSheet">
+        <div class="modal-handle"></div>
+        <p class="modal-day" id="modalDay"></p>
+        <p class="modal-text" id="modalText"></p>
+        <button class="modal-close" id="modalClose" aria-label="Schließen">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+          Schließen
+        </button>
+      </div>
+    </div>
+
+    <script>
+      if (localStorage.getItem('love_auth') !== '1') window.location.replace('../index.html');
+
+      // ── Advent messages (1–24) ─────────────────────
+      const ADVENT_MESSAGES = [
+        "Herzlich Willkommen zu diesen Adventkalender! Ich habe für dich diese kleine funktionale Website entwickelt wo du auf Funktion wie Beispielsweise diesen Adventkalender zugreifen kannst. Vielleicht wird im Laufe unserer Beziehung noch mehr dazukommen! \nIm Kalender werden dich ein paar nette Worte erwarten. Ich hoffe es ist nicht zu wenig für dich. Ich habe mir gedacht ich mache mal was anderes.",
+        "Heute keine besondere Nachricht, weil du leider zu spät das Passwort eingegeben hast ;(",
+        "Für das Türchen am 5. Dezember musst du den Kalender gleich in der Früh nach dem Aufstehen öffnen",
+        "Link abgelaufen",
+        "Guten Morgen Bebi! Da du dir letztens eine Guten Morgen Nachricht gewunschen hast, bekommst du eine. \nIch hoffe du hast gut geschlafen und hast einen wunderbaren start in den Tag mit allen guten und schlechten sachen daran, aber vor allem die guten. \nIch freue mich sehr über deine mühe beim Advendkalender und schätze sehr wie viel liebe du mir damit gibst. Ich bin auch sehr stolz auf dich, wie du in dir Arbeit gesucht hast und als Babysitterin sicher perfekt auf diese Kinder aufpasst. Jetzt hast du auch eine Aktivität, die dir spaß macht und mit der du Geld verdienen kannst, wie ich, wie du es damals wolltest. Gut gemacht!",
+        "Gewonnen! 1x Schoki (Bei mir abzuholen)",
+        "Leider sind wir nicht mehr dazu gekommen, das Kätschen 7 auszuüben, weshalb ich es nach vorne verschoben habe. \nAllerdings finde ich das nicht so schlimm, weil ich mit dir wirklich einen tollen Tag hatte. Und diese Nacht hätte ich mit niemanden anderes lieber verbracht als mit dir.",
+        "Schicksal ist, wenn sich zwei finden, die sich nie gesucht haben.",
+        "Die Vernunft kann nur reden. Es ist die Liebe, die singt.",
+        "Ich spiele eine Servd Karte! Du musst eine Aktivität mit mir ausführen, nämlich mit mir dein nächstest Adventkalender Türchen programmieren.",
+        "Ein Funken Liebe ist mehr wert als ein Sack voll Gold.",
+        "Danke das du dir die Mühe gegeben hast und heute vorbeigekommen bist! Das muss man auch mal sagen, weil es nicht selbstverstädlich ist so jemanden zu haben.\nEs ist keine Kunst, die Welt zu erobern. Wenn du kannst, erobere ein Herz.",
+        "Link: https://docs.google.com/forms/d/e/1FAIpQLScdMN_rjJrZRJs_HbHtO3PZguMjw2nchlpJlnr0AxLT-HXOmA/viewform?usp=header",
+        "Die wichtigen Dinge im Leben sollte man immer bei sich haben.\nAber wie passt du in meinem Rucksack?",
+        "Link: https://at.pinterest.com/search/pins/?rs=ac&len=2&q=gingerbread%20house&eq=ginger&etslf=8476",
+        "Stilles vertrauen heilt das Herz",
+        "Heute gehe ich shoppen und das fast nur für dich :) \nEin Tipp was ich schon habe: heiß, rot.\nAlles Weitere darfst du leider nicht wissen. Wahrscheinlich weiß ich nichtmal mehr, weil ich ja noch nicht weiß was ich heute kaufe ;)",
+        "Viel erfolg bei Mathe und beim restlichen Schultag ❤️ \nMorgen gibt es ein weiteres Video 🎬",
+        "Link: https://www.loom.com/share/7c0367fca424455db30fb7d03300c044?sid=398f0a4a-5192-474b-a60a-d5e89b5c94bb",
+        "Wo zwei ineinander übergehen, so hebt sich die Grenze des Endlichen zwischen ihnen auf. 💞",
+        "Rätsel: Ich glänze im Baum, bringe Freude und Glanz,\nversteckt ein Geheimnis – ich liebe den Tanz. \nWer bin ich? 🎀✨ (Auflösung morgen)",
+        "Auflösung von gestern: Weihnachtsornament 🎀✨ \nRätsel: Ich komme in der Nacht, auf leisen Sohlen, \nmit Sack und Mütze, von Kindern erwählt und empfohlen. \nWer bin ich? ✨",
+        "Auflösung von gestern: Der Weihnachtsmann 🎅 \nNun kommen wir auf dem Finalen Tag dieses Kalenders zu. Den 24.! \nMorgen erwartet dich das letzte Video und wundervolle Weihnachtsgrüße von mir! \nSchönen Tag wünsche ich dir mit deinen Bres in der Therme 🧖🏻‍♀️",
+        "Link: https://www.loom.com/share/c1b72f206ccc4f8587fccc6eb2dddf4a?sid=28d526ab-d9fa-4f6a-8b97-539de588d242",
+      ];
+
+      // ── Doors that open a URL directly ─────────────
+      // Key = door number (1-based), value = URL
+      const LINK_DOORS = {
+        13: 'https://docs.google.com/forms/d/e/1FAIpQLScdMN_rjJrZRJs_HbHtO3PZguMjw2nchlpJlnr0AxLT-HXOmA/viewform?usp=header',
+        15: 'https://at.pinterest.com/search/pins/?rs=ac&len=2&q=gingerbread%20house&eq=ginger&etslf=8476',
+        19: 'https://www.loom.com/share/7c0367fca424455db30fb7d03300c044?sid=398f0a4a-5192-474b-a60a-d5e89b5c94bb',
+        24: 'https://www.loom.com/share/c1b72f206ccc4f8587fcbc6eb2dddf4a?sid=28d526ab-d9fa-4f6a-8b97-539de588d242',
+      };
+
+      // ── Modal helpers ───────────────────────────────
+      const overlay   = document.getElementById('modalOverlay');
+      const modalDay  = document.getElementById('modalDay');
+      const modalText = document.getElementById('modalText');
+      const modalClose = document.getElementById('modalClose');
+
+      function openModal(dayLabel, text) {
+        modalDay.textContent  = dayLabel;
+        // Render links as clickable
+        modalText.innerHTML = text.replace(
+          /(https?:\/\/[^\s]+)/g,
+          '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>'
+        );
+        overlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeModal() {
+        overlay.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+
+      modalClose.addEventListener('click', closeModal);
+      overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+      document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+      // ── Build grid ──────────────────────────────────
+      const grid = document.getElementById('adventDoors');
+      const now  = new Date();
+
+      for (let day = 1; day <= 24; day++) {
+        const li = document.createElement('li');
+        grid.appendChild(li);
+
+        const a = document.createElement('a');
+        li.appendChild(a);
+        a.href = '#';
+        a.textContent = day;
+
+        const isLocked = now.getMonth() + 1 < 12 || now.getDate() < day;
+
+        if (isLocked) {
+          a.className = 'disabled';
+          a.setAttribute('aria-disabled', 'true');
+          a.setAttribute('aria-label', day + '. Dezember — noch gesperrt');
+          a.onclick = e => e.preventDefault();
+
+        } else if (LINK_DOORS[day]) {
+          a.href   = LINK_DOORS[day];
+          a.target = '_blank';
+          a.rel    = 'noopener noreferrer';
+          a.setAttribute('aria-label', day + '. Dezember — Link öffnen');
+
+        } else {
+          const message = ADVENT_MESSAGES[day - 1];
+          a.setAttribute('aria-label', day + '. Dezember öffnen');
+          a.onclick = e => {
+            e.preventDefault();
+            a.classList.add('opened');
+            openModal(day + '. Dezember', message);
+          };
+        }
+      }
+    </script>
+  </body>
+</html>
