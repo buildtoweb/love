@@ -4,110 +4,733 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex" />
-    <link
-      rel="icon"
-      type="image/x-icon"
-      href="https://cdn-icons-png.flaticon.com/128/9484/9484251.png"
-    />
+    <link rel="icon" type="image/x-icon" href="https://cdn-icons-png.flaticon.com/128/9484/9484251.png" />
     <title>Bebi's Dashboard</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
     <style>
-      body {
-        font-family: monospace;
-        background-image: url("https://images.unsplash.com/photo-1671159593326-80a2c134fc6a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
-        color: white;
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 2em;
-        margin: 0;
-        text-align: center;
+      body { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+      /* ── Keyframes ── */
+      @keyframes blob {
+        0%   { transform: translate(0,0) scale(1); }
+        33%  { transform: translate(28px,-44px) scale(1.08); }
+        66%  { transform: translate(-18px,18px) scale(0.94); }
+        100% { transform: translate(0,0) scale(1); }
       }
-      h1 {
-        margin-bottom: 1em;
+      @keyframes float {
+        0%,100% { transform: translateY(0); }
+        50%     { transform: translateY(-7px); }
       }
-      .container {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1em;
-        max-width: 800px;
-        width: 100%;
+      @keyframes pulse-glow {
+        0%,100% { box-shadow: 0 0 18px rgba(244,63,94,0.28), inset 0 0 18px rgba(244,63,94,0.05); }
+        50%     { box-shadow: 0 0 36px rgba(244,63,94,0.52), inset 0 0 24px rgba(244,63,94,0.09); }
       }
-      .box {
-        backdrop-filter: blur(10px) brightness(0.8);
-        background-color: rgba(255, 255, 255, 0.2);
-        border-radius: 15px;
-        padding: 1em;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        transition: transform 0.2s, box-shadow 0.2s;
+      @keyframes countdown-tick {
+        0%,100% { opacity: 1; }
+        45%,55% { opacity: 0.55; }
       }
-      .box:hover {
-        transform: scale(1.05);
-        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+
+      .blob  { animation: blob 9s ease-in-out infinite; }
+      .d2    { animation-delay: 2.5s; }
+      .d4    { animation-delay: 5s; }
+      .d6    { animation-delay: 7s; }
+      .float { animation: float 4.5s ease-in-out infinite; }
+      .pulse-glow     { animation: pulse-glow 2.6s ease-in-out infinite; }
+      .countdown-tick { animation: countdown-tick 1s ease-in-out infinite; }
+
+      /* ── Glass ── */
+      .glass {
+        background: rgba(255,255,255,0.053);
+        backdrop-filter: blur(22px);
+        -webkit-backdrop-filter: blur(22px);
+        border: 1px solid rgba(255,255,255,0.09);
       }
-      .big {
-        grid-column: span 2;
-        height: 150px;
+      .glass-sm {
+        background: rgba(255,255,255,0.042);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255,255,255,0.075);
       }
-      .box img {
-        width: 3rem;
-        height: 3rem;
-        margin-bottom: 0.5em;
+
+      /* ── Card hover ── */
+      .card-lift {
+        transition: transform 0.26s cubic-bezier(0.16,1,0.3,1),
+                    box-shadow 0.26s ease,
+                    border-color 0.26s ease;
       }
-      a {
-        color: white;
-        text-decoration: none;
+      .card-lift:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+        border-color: rgba(255,255,255,0.14);
       }
+
+      /* ── Gradients ── */
+      .text-gr-rose {
+        background: linear-gradient(135deg, #fb7185, #f472b6, #e879f9);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .text-gr-paris {
+        background: linear-gradient(135deg, #a5b4fc, #818cf8, #6366f1);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .text-gr-gold {
+        background: linear-gradient(135deg, #fcd34d, #f59e0b, #d97706);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      /* ── Paris card states ── */
+      .ev-current {
+        background: rgba(244,63,94,0.09);
+        border: 1px solid rgba(244,63,94,0.32);
+      }
+      .ev-next {
+        background: rgba(129,140,248,0.07);
+        border: 1px solid rgba(129,140,248,0.2);
+      }
+      .ev-past { opacity: 0.38; }
+
+      /* ── Buttons ── */
+      .btn-paris {
+        background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        transition: all 0.22s cubic-bezier(0.16,1,0.3,1);
+        cursor: pointer;
+      }
+      .btn-paris:hover {
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(129,140,248,0.38);
+      }
+      .btn-paris:active { transform: translateY(0); }
+
+      /* ── Monospaced timer digits ── */
+      .mono {
+        font-variant-numeric: tabular-nums;
+        font-feature-settings: 'tnum';
+      }
+
+      /* ── Modal scrollbar ── */
+      .modal-body::-webkit-scrollbar { width: 3px; }
+      .modal-body::-webkit-scrollbar-track  { background: transparent; }
+      .modal-body::-webkit-scrollbar-thumb  { background: rgba(255,255,255,0.14); border-radius: 4px; }
+
+      /* ── Day tab active ── */
+      .tab-active {
+        background: rgba(244,63,94,0.14) !important;
+        border-color: rgba(244,63,94,0.38) !important;
+        color: #fb7185 !important;
+      }
+
+      /* ── Separator ── */
+      .sep { border-color: rgba(255,255,255,0.07); }
     </style>
   </head>
-  <body>
-    <section>
-      <h1>Bebi's Dashboard</h1>
-      <div class="container">
-        <div class="box big">
-          <img src="https://cdn-icons-png.flaticon.com/128/9484/9484251.png" />
-          <p>Zusammen seit</p>
-          <p id="timer"></p>
+
+  <body class="min-h-screen bg-[#05030a] text-white relative overflow-x-hidden">
+
+    <!-- ── Background blobs ── -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+      <div class="blob    absolute -top-52 -right-32  w-[500px] h-[500px] rounded-full opacity-[0.12]"
+           style="background:radial-gradient(circle,#be185d,transparent 66%);"></div>
+      <div class="blob d2 absolute -bottom-40 -left-40 w-[400px] h-[400px] rounded-full opacity-[0.10]"
+           style="background:radial-gradient(circle,#4338ca,transparent 66%);"></div>
+      <div class="blob d4 absolute top-[40%] right-[25%]  w-80 h-80 rounded-full opacity-[0.07]"
+           style="background:radial-gradient(circle,#db2777,transparent 66%);"></div>
+      <div class="blob d6 absolute bottom-[30%] left-[35%] w-64 h-64 rounded-full opacity-[0.06]"
+           style="background:radial-gradient(circle,#7c3aed,transparent 66%);"></div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!--  MAIN APP                                      -->
+    <!-- ══════════════════════════════════════════════ -->
+    <div x-data="dashApp()" class="relative z-10 max-w-3xl mx-auto px-4 py-10 sm:py-14">
+
+      <!-- Header -->
+      <header class="text-center mb-10">
+        <div class="float inline-block text-5xl mb-3" aria-hidden="true">💕</div>
+        <h1 style="font-family:'Cormorant Garamond',serif;font-weight:500;"
+            class="text-4xl sm:text-5xl text-white mb-2">Bebi's Dashboard</h1>
+        <p class="text-white/35 text-sm" x-text="headerDate"></p>
+      </header>
+
+      <!-- Cards -->
+      <div class="space-y-4">
+
+        <!-- ════════════════════════════════════════ -->
+        <!--  PARIS CARD                              -->
+        <!-- ════════════════════════════════════════ -->
+        <div class="glass rounded-3xl overflow-hidden card-lift">
+
+          <!-- ── BEFORE TRIP ── -->
+          <div x-show="tripStatus === 'before'" x-transition class="p-6 sm:p-8">
+
+            <div class="flex items-start gap-4 mb-7">
+              <div class="float text-4xl leading-none" aria-hidden="true">🗼</div>
+              <div class="flex-1">
+                <h2 class="text-xl font-semibold text-gr-paris leading-tight">Paris · 4.–8. April 2026</h2>
+                <p class="text-white/40 text-sm mt-0.5">Die Abreise rückt näher…</p>
+              </div>
+              <button @click="showModal = true"
+                      class="btn-paris flex-shrink-0 text-white text-xs px-4 py-2 rounded-xl font-medium">
+                Plan →
+              </button>
+            </div>
+
+            <!-- Countdown grid -->
+            <div class="flex justify-center items-end gap-3 sm:gap-5">
+              <template x-for="unit in countdownUnits" :key="unit.label">
+                <div class="text-center">
+                  <div class="mono text-5xl sm:text-6xl font-bold text-gr-paris leading-none"
+                       :class="unit.label === 'SEK' ? 'countdown-tick' : ''"
+                       x-text="unit.value"></div>
+                  <div class="text-white/28 text-xs mt-2 tracking-widest uppercase" x-text="unit.label"></div>
+                </div>
+                <div x-show="unit.label !== 'SEK'" class="text-white/20 text-4xl font-thin pb-3">:</div>
+              </template>
+            </div>
+
+            <p class="text-center text-white/25 text-sm mt-5">bis zum Abflug nach Paris ✈️</p>
+          </div>
+
+          <!-- ── DURING TRIP ── -->
+          <div x-show="tripStatus === 'during'" x-transition>
+
+            <!-- Card top bar -->
+            <div class="flex items-center gap-3 px-6 pt-6 pb-4 border-b sep">
+              <div class="float text-2xl leading-none" aria-hidden="true">🗼</div>
+              <div class="flex-1">
+                <h2 class="text-base font-semibold text-gr-paris" x-text="currentDayTitle"></h2>
+                <div class="flex items-center gap-2 mt-0.5">
+                  <!-- Day dots -->
+                  <template x-for="i in 5" :key="i">
+                    <div class="w-1.5 h-1.5 rounded-full transition-colors duration-300"
+                         :class="i - 1 === currentDay ? 'bg-rose-400' : (i - 1 < currentDay ? 'bg-white/30' : 'bg-white/12')"></div>
+                  </template>
+                  <span class="text-white/30 text-xs ml-1" x-text="'Tag ' + (currentDay + 1) + ' von 5'"></span>
+                </div>
+              </div>
+              <button @click="showModal = true"
+                      class="btn-paris flex-shrink-0 text-white text-xs px-4 py-2.5 rounded-xl font-medium">
+                Gesamter Plan →
+              </button>
+            </div>
+
+            <!-- Timeline: prev → current → next -->
+            <div class="p-5 sm:p-6 space-y-2.5">
+
+              <!-- Previous -->
+              <div x-show="prevActivity"
+                   class="ev-past flex items-center gap-3 px-4 py-2.5 rounded-xl">
+                <span class="text-xl flex-shrink-0" x-text="prevActivity?.emoji"></span>
+                <div class="flex-1 min-w-0 flex items-baseline gap-2">
+                  <span class="mono text-xs text-white/35" x-text="prevActivity?.time"></span>
+                  <span class="text-sm text-white/45 truncate" x-text="prevActivity?.title"></span>
+                </div>
+                <span class="text-white/20 text-xs flex-shrink-0">erledigt ✓</span>
+              </div>
+
+              <!-- ★ Current ★ -->
+              <div x-show="currentActivity"
+                   class="ev-current pulse-glow rounded-2xl p-5">
+                <div class="flex items-start gap-4">
+                  <span class="float text-5xl leading-none flex-shrink-0" x-text="currentActivity?.emoji"></span>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1.5 flex-wrap">
+                      <span class="text-xs bg-rose-500/25 text-rose-300 px-2.5 py-0.5 rounded-full font-semibold tracking-wide">
+                        GERADE JETZT
+                      </span>
+                      <span class="mono text-xs text-white/35" x-text="currentActivity?.time + ' Uhr'"></span>
+                    </div>
+                    <h3 class="text-xl font-semibold text-white leading-snug" x-text="currentActivity?.title"></h3>
+                    <p x-show="currentActivity?.detail"
+                       class="text-sm text-white/50 mt-1" x-text="currentActivity?.detail"></p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Next -->
+              <div x-show="nextActivity"
+                   class="ev-next flex items-center gap-3 px-4 py-3 rounded-xl">
+                <span class="text-xl flex-shrink-0" x-text="nextActivity?.emoji"></span>
+                <div class="flex-1 min-w-0">
+                  <span class="mono text-xs text-indigo-400/60" x-text="nextActivity?.time + ' Uhr'"></span>
+                  <span class="text-sm text-white/65 ml-2" x-text="nextActivity?.title"></span>
+                </div>
+                <div class="flex-shrink-0 text-right">
+                  <p class="text-white/25 text-xs">in</p>
+                  <p class="mono text-sm font-semibold text-indigo-400" x-text="countdown.str"></p>
+                </div>
+              </div>
+
+              <div x-show="!nextActivity" class="text-center py-2">
+                <p class="text-white/25 text-sm">Das war die letzte Aktivität heute 🌙</p>
+              </div>
+            </div>
+
+            <!-- Day progress bar -->
+            <div class="px-5 pb-5 sm:px-6 sm:pb-6">
+              <div class="flex justify-between text-xs text-white/25 mb-1.5">
+                <span x-text="dayProgressLabel"></span>
+                <span x-text="dayProgress + '%'"></span>
+              </div>
+              <div class="h-0.5 bg-white/8 rounded-full overflow-hidden">
+                <div class="h-full rounded-full transition-all duration-1000"
+                     style="background: linear-gradient(90deg, #e11d48, #ec4899);"
+                     :style="'width:' + dayProgress + '%'"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── AFTER TRIP ── -->
+          <div x-show="tripStatus === 'after'" x-transition class="p-6 sm:p-8 text-center">
+            <div class="float inline-block text-5xl mb-4" aria-hidden="true">🗼</div>
+            <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:2.2rem;"
+                class="text-gr-paris mb-2">Merci, Paris!</h2>
+            <p class="text-white/40 text-sm mb-6">4.–8. April 2026 · Eine unvergessliche Reise ❤️</p>
+            <button @click="showModal = true"
+                    class="btn-paris text-white text-sm px-7 py-3 rounded-xl font-medium">
+              Reise ansehen →
+            </button>
+          </div>
+
         </div>
-        <a href="">
-          <div class="box">
-            <!-- <img
-              src="https://cdn-icons-png.flaticon.com/128/2242/2242451.png"
-            /> -->
-            <img
-              src="https://cdn-icons-png.flaticon.com/128/9473/9473235.png"
-            />
-            <p>Adventkalender</p>
+        <!-- / Paris card -->
+
+        <!-- ════════════════════════════════════════ -->
+        <!--  BOTTOM ROW                              -->
+        <!-- ════════════════════════════════════════ -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+          <!-- Relationship timer -->
+          <div class="glass rounded-3xl p-6 text-center card-lift sm:col-span-1 flex flex-col items-center justify-center">
+            <div class="float text-3xl mb-3" aria-hidden="true">❤️</div>
+            <p class="text-white/35 text-xs uppercase tracking-widest mb-2">Zusammen seit</p>
+            <div class="mono font-bold text-gr-rose leading-none mb-1" style="font-size:3.2rem;" x-text="daysTogether"></div>
+            <p class="text-white/28 text-sm">Tage</p>
+            <div class="mt-3 pt-3 border-t sep w-full">
+              <p class="text-white/28 text-xs" x-text="yearsMonths"></p>
+            </div>
           </div>
-        </a>
-        <a href="pages/text.html">
-          <div class="box">
-            <img
-              src="https://cdn-icons-png.flaticon.com/128/4457/4457168.png"
-            />
-            <p>Nachrichten</p>
-          </div>
-        </a>
+
+          <!-- Advent calendar -->
+          <a href="pages/advent-calendar/" class="block sm:col-span-1" aria-label="Adventkalender">
+            <div class="glass rounded-3xl p-6 text-center card-lift h-full flex flex-col items-center justify-center min-h-[160px]">
+              <div class="float text-3xl mb-3" aria-hidden="true">🎄</div>
+              <p class="text-white/70 font-medium mb-1">Adventkalender</p>
+              <p class="text-white/28 text-xs">24 Türchen voller Liebe</p>
+            </div>
+          </a>
+
+          <!-- Messages -->
+          <a href="pages/text.html" class="block sm:col-span-1" aria-label="Nachrichten">
+            <div class="glass rounded-3xl p-6 text-center card-lift h-full flex flex-col items-center justify-center min-h-[160px]">
+              <div class="float text-3xl mb-3" aria-hidden="true">💌</div>
+              <p class="text-white/70 font-medium mb-1">Nachrichten</p>
+              <p class="text-white/28 text-xs">Nur für dich</p>
+            </div>
+          </a>
+
+        </div>
       </div>
-    </section>
+      <!-- / Cards -->
+    </div>
+    <!-- / Main app -->
 
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!--  PARIS FULL PLAN MODAL                        -->
+    <!-- ══════════════════════════════════════════════ -->
+    <div
+      x-data
+      x-show="$store.paris.showModal"
+      x-transition:enter="transition ease-out duration-280"
+      x-transition:enter-start="opacity-0"
+      x-transition:enter-end="opacity-100"
+      x-transition:leave="transition ease-in duration-200"
+      x-transition:leave-start="opacity-100"
+      x-transition:leave-end="opacity-0"
+      class="fixed inset-0 z-50 flex items-end sm:items-center justify-center"
+      @keydown.escape.window="$store.paris.showModal = false"
+    >
+      <!-- Backdrop -->
+      <div class="absolute inset-0 bg-black/72 backdrop-blur-sm"
+           @click="$store.paris.showModal = false"></div>
+
+      <!-- Sheet -->
+      <div
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="translate-y-6 scale-[0.97] opacity-0"
+        x-transition:enter-end="translate-y-0 scale-100 opacity-100"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="translate-y-0 scale-100 opacity-100"
+        x-transition:leave-end="translate-y-6 scale-[0.97] opacity-0"
+        class="relative w-full max-w-2xl mx-3 max-h-[92dvh] flex flex-col rounded-t-3xl sm:rounded-3xl overflow-hidden shadow-[0_32px_80px_rgba(0,0,0,0.65)]"
+        style="background:#0c0917; border:1px solid rgba(255,255,255,0.1);"
+      >
+        <!-- Modal header -->
+        <div class="flex items-center gap-3 px-6 py-5 border-b sep flex-shrink-0"
+             style="background:rgba(255,255,255,0.03);">
+          <span class="text-2xl" aria-hidden="true">🗼</span>
+          <div class="flex-1">
+            <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:1.35rem;"
+                class="text-white">Paris · 4.–8. April 2026</h2>
+            <p class="text-white/35 text-xs">Unser Reiseplan</p>
+          </div>
+          <button @click="$store.paris.showModal = false"
+                  type="button"
+                  class="text-white/35 hover:text-white/70 transition-colors p-2 rounded-xl hover:bg-white/6 cursor-pointer"
+                  aria-label="Schließen">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Day tabs -->
+        <div class="flex gap-1.5 px-4 py-3 overflow-x-auto flex-shrink-0 border-b sep">
+          <button
+            @click="$store.paris.modalDay = null"
+            type="button"
+            class="flex-shrink-0 px-3.5 py-2 rounded-xl text-xs font-medium border border-white/10 transition-all duration-200 cursor-pointer"
+            :class="$store.paris.modalDay === null ? 'tab-active' : 'text-white/42 hover:text-white/70 hover:bg-white/5'"
+          >Alle</button>
+
+          <template x-for="(tab, i) in [
+            {s:'Sa',d:'4.4.',e:'✈️'},
+            {s:'So',d:'5.4.',e:'🖼️'},
+            {s:'Mo',d:'6.4.',e:'🎨'},
+            {s:'Di',d:'7.4.',e:'🏙️'},
+            {s:'Mi',d:'8.4.',e:'✈️'},
+          ]" :key="i">
+            <button
+              @click="$store.paris.modalDay = i"
+              type="button"
+              class="flex-shrink-0 px-3 py-1.5 rounded-xl text-xs font-medium border border-white/10 transition-all duration-200 cursor-pointer text-center leading-tight"
+              :class="$store.paris.modalDay === i ? 'tab-active' : 'text-white/42 hover:text-white/70 hover:bg-white/5'"
+            >
+              <div x-text="tab.e + ' ' + tab.s" class="whitespace-nowrap"></div>
+              <div class="opacity-55 mt-0.5" x-text="tab.d"></div>
+            </button>
+          </template>
+        </div>
+
+        <!-- ── Schedule list ── -->
+        <div class="modal-body overflow-y-auto flex-1 p-3 sm:p-4">
+
+          <template x-for="(event, idx) in filteredSchedule()" :key="event.date + event.time">
+            <div>
+              <!-- Day section header (only in "Alle" view) -->
+              <template x-if="event._dayHead && $store.paris.modalDay === null">
+                <div class="flex items-center gap-2 pt-4 pb-2 px-2 first:pt-1"
+                     :class="idx === 0 ? 'pt-1' : 'pt-4'">
+                  <div class="h-px flex-1 bg-white/8"></div>
+                  <span class="text-white/35 text-xs font-medium px-2" x-text="event._dayLabel"></span>
+                  <div class="h-px flex-1 bg-white/8"></div>
+                </div>
+              </template>
+
+              <!-- Event row -->
+              <div
+                class="flex items-start gap-3 px-3 py-3 rounded-2xl mb-1 transition-colors duration-150"
+                :class="{
+                  'ev-current pulse-glow': isCurrentEvent(event),
+                  'ev-past': isPastEvent(event),
+                  'ev-next': isNextEvent(event),
+                  'hover:bg-white/[0.04]': !isCurrentEvent(event) && !isPastEvent(event),
+                }"
+              >
+                <!-- Status dot -->
+                <div class="flex-shrink-0 mt-2.5">
+                  <div class="w-1.5 h-1.5 rounded-full transition-all duration-300"
+                       :class="{
+                         'bg-rose-400 shadow-[0_0_7px_rgba(244,63,94,0.9)] scale-125': isCurrentEvent(event),
+                         'bg-white/18': isPastEvent(event),
+                         'bg-indigo-400': isNextEvent(event),
+                         'bg-white/35': !isCurrentEvent(event) && !isPastEvent(event) && !isNextEvent(event),
+                       }"></div>
+                </div>
+
+                <!-- Emoji -->
+                <span class="text-2xl flex-shrink-0 leading-none mt-0.5" x-text="event.emoji"></span>
+
+                <!-- Content -->
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                    <span class="mono text-xs text-white/32" x-text="event.time + ' Uhr'"></span>
+                    <span x-show="isCurrentEvent(event)"
+                          class="text-xs bg-rose-500/25 text-rose-300 px-2 py-0.5 rounded-full font-semibold">Jetzt</span>
+                    <span x-show="isNextEvent(event)"
+                          class="text-xs bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded-full font-medium">Als nächstes</span>
+                  </div>
+                  <p class="text-sm font-medium leading-snug"
+                     :class="isPastEvent(event) ? 'text-white/45' : 'text-white'"
+                     x-text="event.title"></p>
+                  <p x-show="event.detail"
+                     class="text-xs text-white/35 mt-0.5" x-text="event.detail"></p>
+                </div>
+              </div>
+            </div>
+          </template>
+
+        </div>
+        <!-- / Schedule list -->
+
+        <!-- Footer -->
+        <div class="px-5 py-3.5 border-t sep flex-shrink-0"
+             style="background:rgba(255,255,255,0.02);">
+          <div class="flex items-center justify-between text-xs text-white/25 flex-wrap gap-y-1">
+            <span>✈️ VIE→ORY · Sa. 10:15</span>
+            <span>🎟️ Louvre &amp; Bootsfahrt ✅</span>
+            <span>✈️ ORY→VIE · Mi. 17:05</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- / Modal -->
+
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!--  JAVASCRIPT                                    -->
+    <!-- ══════════════════════════════════════════════ -->
     <script>
-      // Startdatum eingeben (im Format YYYY-MM-DD)
-      const startDate = new Date("2023-01-29");
+    // ── Paris schedule data ──────────────────────────
+    // All times are Paris local (CEST = UTC+2 in April)
+    const DAY_LABELS = [
+      'Samstag, 4. April — Ankunft & Eiffelturm',
+      'Sonntag, 5. April — Marais, Louvre & Rive Gauche',
+      'Montag, 6. April — Dior, Montmartre & Glitzern',
+      'Dienstag, 7. April — Sinking House & Pink Mamma',
+      'Mittwoch, 8. April — Letzter Morgen & Abreise',
+    ];
 
-      function calculateDays() {
-        const today = new Date();
-        const difference = today - startDate;
-        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-        document.getElementById("timer").innerText = days + " Tage";
-      }
+    const SCHEDULE = [
+      // ── SAMSTAG 4. April ──────────────────────────
+      { day:0, date:'2026-04-04', time:'12:20', emoji:'✈️', title:'Landung in Paris',          detail:'Ankunft Flughafen Orly', _dayHead:true, _dayLabel:DAY_LABELS[0] },
+      { day:0, date:'2026-04-04', time:'13:15', emoji:'🏨', title:'Hotel – Koffer abgeben',     detail:'Aparthotel Adagio Access · Check-in ab 15:00' },
+      { day:0, date:'2026-04-04', time:'14:00', emoji:'📸', title:'Avenue de Camoëns',          detail:'Eiffelturm Foto-Spot' },
+      { day:0, date:'2026-04-04', time:'14:30', emoji:'🗼', title:'Eiffelturm',                 detail:'Von außen erkunden' },
+      { day:0, date:'2026-04-04', time:'15:00', emoji:'📸', title:'Rue de l\'Université',       detail:'Eiffelturm Foto-Spot' },
+      { day:0, date:'2026-04-04', time:'15:30', emoji:'🌅', title:'Trocadéro → Park',           detail:'Panoramablick auf den Eiffelturm' },
+      { day:0, date:'2026-04-04', time:'16:15', emoji:'🏛️', title:'Arc de Triomphe',            detail:'Terrasse lohnt sich!' },
+      { day:0, date:'2026-04-04', time:'17:15', emoji:'🛍️', title:'Champs-Élysées',             detail:'Flanieren' },
+      { day:0, date:'2026-04-04', time:'17:30', emoji:'🍬', title:'Pierre Hermé',               detail:'Macarons! (Nr. 133 Champs-Élysées)' },
+      { day:0, date:'2026-04-04', time:'17:45', emoji:'🌹', title:'Lancôme',                    detail:'Nr. 52 Champs-Élysées — Gratis Rosé!' },
+      { day:0, date:'2026-04-04', time:'18:30', emoji:'🍟', title:'Patate',                     detail:'36 Rue Saint-André des Arts' },
+      { day:0, date:'2026-04-04', time:'19:30', emoji:'🚢', title:'Aufbruch zur Bootsfahrt',    detail:'Rechtzeitig am Anleger sein' },
+      { day:0, date:'2026-04-04', time:'20:00', emoji:'🛥️', title:'Seine Bootsfahrt ✅',        detail:'Bereits gebucht!' },
+      // ── SONNTAG 5. April ──────────────────────────
+      { day:1, date:'2026-04-05', time:'09:30', emoji:'🌈', title:'Rue Crémieux',               detail:'Früh hin — fast menschenleer!', _dayHead:true, _dayLabel:DAY_LABELS[1] },
+      { day:1, date:'2026-04-05', time:'10:00', emoji:'🛍️', title:'Fleux Shop',                 detail:'Jellycats (öffnet 10:45)' },
+      { day:1, date:'2026-04-05', time:'10:45', emoji:'🍵', title:'66matcha',                   detail:'Matcha im Marais' },
+      { day:1, date:'2026-04-05', time:'11:30', emoji:'🏛️', title:'Louvre ✅',                  detail:'Mind. 2,5 Std. — bereits gebucht!' },
+      { day:1, date:'2026-04-05', time:'14:15', emoji:'🌿', title:'Jardin du Palais Royal',     detail:'Säulen + Garten' },
+      { day:1, date:'2026-04-05', time:'14:45', emoji:'☕', title:'Café Kitsuné',               detail:'2. Matcha-Stop (optional)' },
+      { day:1, date:'2026-04-05', time:'15:15', emoji:'🔐', title:'Pont des Arts',              detail:'Liebesschloss-Brücke ❤️' },
+      { day:1, date:'2026-04-05', time:'15:45', emoji:'💄', title:'Kiko Milano',                detail:'Gravur! (94 Rue de Rivoli)' },
+      { day:1, date:'2026-04-05', time:'16:15', emoji:'🎨', title:'Musée de l\'Orangerie',      detail:'Monet\'s Seerosen' },
+      { day:1, date:'2026-04-05', time:'17:30', emoji:'🌿', title:'Fontaine Médicis',           detail:'Jardin du Luxembourg — romantischster Ort!' },
+      { day:1, date:'2026-04-05', time:'19:30', emoji:'🧅', title:'Zwiebelsuppe',               detail:'Au Pied de Cochon' },
+      { day:1, date:'2026-04-05', time:'21:30', emoji:'⛪', title:'Notre Dame',                 detail:'Abends beleuchtet' },
+      // ── MONTAG 6. April ───────────────────────────
+      { day:2, date:'2026-04-06', time:'10:00', emoji:'🎀', title:'Galerie Dior',               detail:'Öffnet 11:00 — Restkarten an der Kasse', _dayHead:true, _dayLabel:DAY_LABELS[2] },
+      { day:2, date:'2026-04-06', time:'12:00', emoji:'⛪', title:'Sacré-Cœur',                 detail:'Früher = weniger Gedränge' },
+      { day:2, date:'2026-04-06', time:'12:45', emoji:'🌸', title:'La Maison Rose',             detail:'Foto von außen (Mo. geschlossen)' },
+      { day:2, date:'2026-04-06', time:'13:30', emoji:'🎭', title:'Opéra Garnier',              detail:'Von innen anschauen — ca. 1 Std.' },
+      { day:2, date:'2026-04-06', time:'14:45', emoji:'🥐', title:'Cookie Croissant',           detail:'11 Rue de Châteaudun' },
+      { day:2, date:'2026-04-06', time:'15:30', emoji:'🛍️', title:'Galeries Lafayette',         detail:'Dachterrasse + Jellycat Pâtisserie' },
+      { day:2, date:'2026-04-06', time:'17:00', emoji:'🍫', title:'Chapon',                     detail:'Mousse au Chocolat to go (69 Rue du Bac)' },
+      { day:2, date:'2026-04-06', time:'19:00', emoji:'🍽️', title:'Abendessen',                 detail:'' },
+      { day:2, date:'2026-04-06', time:'20:30', emoji:'🎡', title:'Moulin Rouge',               detail:'Foto-Stop — schön rot beleuchtet! 📸' },
+      { day:2, date:'2026-04-06', time:'21:00', emoji:'✨', title:'Champ de Mars + ET Glitzern',detail:'Picknick · Glitzern jede volle Stunde, letztes 23:00!' },
+      // ── DIENSTAG 7. April ─────────────────────────
+      { day:3, date:'2026-04-07', time:'09:30', emoji:'🏚️', title:'The Sinking House',          detail:'Rue Raynouard 51 — früh hingehen', _dayHead:true, _dayLabel:DAY_LABELS[3] },
+      { day:3, date:'2026-04-07', time:'11:00', emoji:'🛍️', title:'Marais bummeln',             detail:'Rue des Francs-Bourgeois' },
+      { day:3, date:'2026-04-07', time:'13:00', emoji:'🥐', title:'Du Pain et des Idées',       detail:'Mittagssnack (Di. offen ✅)' },
+      { day:3, date:'2026-04-07', time:'14:00', emoji:'🏝️', title:'Île Saint-Louis',            detail:'Romantischer Spaziergang + Berthillon Eis 🍦' },
+      { day:3, date:'2026-04-07', time:'16:00', emoji:'☕', title:'L\'Éclair de Génie Café',    detail:'Éclairs & Kaffee' },
+      { day:3, date:'2026-04-07', time:'19:00', emoji:'🌿', title:'Pink Mamma',                 detail:'20bis Rue de Douai' },
+      // ── MITTWOCH 8. April ─────────────────────────
+      { day:4, date:'2026-04-08', time:'11:00', emoji:'🧳', title:'Check-out',                  detail:'Hotel verlassen bis 11:00 Uhr', _dayHead:true, _dayLabel:DAY_LABELS[4] },
+      { day:4, date:'2026-04-08', time:'11:15', emoji:'☕', title:'Café Saint Laurent (YSL)',   detail:'8 Rue du 29 Juillet' },
+      { day:4, date:'2026-04-08', time:'12:00', emoji:'🌿', title:'Jardin des Tuileries',       detail:'Letzter Spaziergang' },
+      { day:4, date:'2026-04-08', time:'13:30', emoji:'🧳', title:'Gepäck holen & Aufbruch',    detail:'' },
+      { day:4, date:'2026-04-08', time:'14:30', emoji:'🚕', title:'Richtung Flughafen Orly',    detail:'' },
+      { day:4, date:'2026-04-08', time:'17:05', emoji:'✈️', title:'Abflug nach Wien',           detail:'Bon voyage! 💕' },
+    ];
 
-      calculateDays();
+    // Absolute timestamps (CEST = UTC+2)
+    const TRIP_DEPARTURE = new Date('2026-04-04T10:15:00+02:00'); // flight departs Vienna
+    const TRIP_END       = new Date('2026-04-08T19:05:00+02:00'); // lands back in Vienna
+    const LOVE_START     = new Date('2023-01-29T00:00:00');
+
+    function parisTime(date, time) {
+      return new Date(date + 'T' + time + ':00+02:00');
+    }
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    // ── Alpine store (shared between main app & modal) ──
+    document.addEventListener('alpine:init', () => {
+      Alpine.store('paris', {
+        showModal: false,
+        modalDay: null,
+      });
+    });
+
+    // ── Main dashboard component ──────────────────────
+    function dashApp() {
+      return {
+        // Trip live state
+        tripStatus:      'before',
+        currentActivity: null,
+        prevActivity:    null,
+        nextActivity:    null,
+        currentDay:      0,
+        countdown:       { d:'00', h:'00', m:'00', s:'00', str:'—' },
+        countdownUnits:  [],
+        dayProgress:     0,
+        dayProgressLabel:'',
+
+        // Header
+        headerDate: '',
+        daysTogether: '0',
+        yearsMonths:  '',
+
+        get showModal()       { return Alpine.store('paris').showModal; },
+        set showModal(val)    { Alpine.store('paris').showModal = val; },
+
+        get currentDayTitle() {
+          const labels = [
+            'Samstag · Ankunft & Eiffelturm',
+            'Sonntag · Marais, Louvre & Rive Gauche',
+            'Montag · Dior, Montmartre & Glitzern',
+            'Dienstag · Sinking House & Pink Mamma',
+            'Mittwoch · Letzter Morgen & Abreise',
+          ];
+          return labels[this.currentDay] ?? '';
+        },
+
+        filteredSchedule() {
+          const day = Alpine.store('paris').modalDay;
+          return day === null ? SCHEDULE : SCHEDULE.filter(e => e.day === day);
+        },
+
+        isCurrentEvent(ev) {
+          return this.currentActivity &&
+            ev.date === this.currentActivity.date &&
+            ev.time === this.currentActivity.time;
+        },
+        isPastEvent(ev) {
+          if (this.tripStatus === 'after') return true;
+          if (this.tripStatus !== 'during') return false;
+          return parisTime(ev.date, ev.time) < new Date() && !this.isCurrentEvent(ev);
+        },
+        isNextEvent(ev) {
+          return this.nextActivity &&
+            ev.date === this.nextActivity.date &&
+            ev.time === this.nextActivity.time;
+        },
+
+        init() {
+          this.tick();
+          setInterval(() => this.tick(), 1000);
+        },
+
+        tick() {
+          const now = new Date();
+          this.updateHeader(now);
+          this.updateDaysTogether(now);
+
+          if (now < TRIP_DEPARTURE) {
+            this.tripStatus = 'before';
+            this.buildCountdownUnits(TRIP_DEPARTURE, now);
+          } else if (now >= TRIP_END) {
+            this.tripStatus = 'after';
+          } else {
+            this.tripStatus = 'during';
+            this.updateLiveActivity(now);
+          }
+        },
+
+        updateHeader(now) {
+          this.headerDate = now.toLocaleDateString('de-AT', {
+            weekday:'long', day:'numeric', month:'long', year:'numeric',
+            hour:'2-digit', minute:'2-digit',
+          });
+        },
+
+        updateDaysTogether(now) {
+          const ms    = now - LOVE_START;
+          const total = Math.floor(ms / 86_400_000);
+          this.daysTogether = total.toLocaleString('de-AT');
+
+          const y  = Math.floor(total / 365.25);
+          const rm = Math.floor((total - y * 365.25) / 30.44);
+          const rd = Math.floor(total - y * 365.25 - rm * 30.44);
+          this.yearsMonths =
+            `${y} Jahr${y !== 1 ? 'e' : ''} · ${rm} Monat${rm !== 1 ? 'e' : ''} · ${rd} Tag${rd !== 1 ? 'e' : ''}`;
+        },
+
+        buildCountdownUnits(target, now) {
+          const diff = Math.max(0, target - now);
+          const d = Math.floor(diff / 86_400_000);
+          const h = Math.floor((diff % 86_400_000) / 3_600_000);
+          const m = Math.floor((diff % 3_600_000)  /    60_000);
+          const s = Math.floor((diff %    60_000)  /     1_000);
+          this.countdownUnits = [
+            { value: pad(d), label: 'TAGE' },
+            { value: pad(h), label: 'STD'  },
+            { value: pad(m), label: 'MIN'  },
+            { value: pad(s), label: 'SEK'  },
+          ];
+        },
+
+        updateLiveActivity(now) {
+          let curIdx = -1, nextIdx = -1;
+          for (let i = 0; i < SCHEDULE.length; i++) {
+            if (parisTime(SCHEDULE[i].date, SCHEDULE[i].time) <= now) {
+              curIdx = i;
+            } else if (nextIdx === -1) {
+              nextIdx = i;
+            }
+          }
+
+          this.currentActivity = curIdx  >= 0 ? SCHEDULE[curIdx]     : null;
+          this.prevActivity    = curIdx  >  0 ? SCHEDULE[curIdx - 1] : null;
+          this.nextActivity    = nextIdx >= 0 ? SCHEDULE[nextIdx]    : null;
+          this.currentDay      = this.currentActivity?.day ?? 0;
+
+          // Countdown string to next event
+          const target = this.nextActivity
+            ? parisTime(this.nextActivity.date, this.nextActivity.time)
+            : TRIP_END;
+          const diff = Math.max(0, target - now);
+          const dh = Math.floor(diff / 3_600_000);
+          const dm = Math.floor((diff % 3_600_000) / 60_000);
+          const ds = Math.floor((diff % 60_000)    /  1_000);
+          this.countdown.str = dh > 0
+            ? `${pad(dh)}:${pad(dm)}:${pad(ds)}`
+            : `${pad(dm)}:${pad(ds)}`;
+
+          // Day progress
+          const dayEvs  = SCHEDULE.filter(e => e.day === this.currentDay);
+          const done    = dayEvs.filter(e => parisTime(e.date, e.time) <= now).length;
+          this.dayProgress      = Math.round((done / dayEvs.length) * 100);
+          this.dayProgressLabel = `${done} von ${dayEvs.length} Aktivitäten heute`;
+        },
+      };
+    }
     </script>
   </body>
 </html>

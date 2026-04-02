@@ -1,84 +1,179 @@
-<!-- Passwort-Seite -->
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" class="h-full">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex" />
-    <link
-      rel="icon"
-      type="image/x-icon"
-      href="https://cdn-icons-png.flaticon.com/128/9484/9484251.png"
-    />
-    <title>I love you (Passwort erforderlich)</title>
-
     <meta property="og:title" content="Bebi's Dashboard" />
     <meta property="og:description" content="1 ungelesene Nachricht" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://paxdii.github.io/love/" />
+    <link rel="icon" type="image/x-icon" href="https://cdn-icons-png.flaticon.com/128/9484/9484251.png" />
+    <title>I love you</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
     <style>
-      body {
-        font-family: monospace;
-        background-color: #111;
-        color: white;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        overflow: hidden;
+      body { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+      @keyframes blob {
+        0%   { transform: translate(0, 0) scale(1); }
+        33%  { transform: translate(28px, -44px) scale(1.09); }
+        66%  { transform: translate(-18px, 18px) scale(0.93); }
+        100% { transform: translate(0, 0) scale(1); }
       }
-      input {
-        padding: 1em;
-        margin-top: 1em;
-        border: none;
-        border-radius: 5px;
+      @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50%       { transform: translateY(-7px); }
       }
-      button {
-        padding: 1em 2em;
-        margin-top: 1em;
-        border: none;
-        border-radius: 5px;
-        background-color: #555;
-        color: white;
+
+      .blob  { animation: blob 9s ease-in-out infinite; }
+      .d2    { animation-delay: 2.5s; }
+      .d4    { animation-delay: 5s; }
+      .float { animation: float 4.5s ease-in-out infinite; }
+
+      .glass {
+        background: rgba(255,255,255,0.055);
+        backdrop-filter: blur(22px);
+        -webkit-backdrop-filter: blur(22px);
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+
+      .btn-rose {
+        background: linear-gradient(135deg, #e11d48, #be185d);
+        transition: all 0.22s cubic-bezier(0.16,1,0.3,1);
         cursor: pointer;
       }
-      button:hover {
-        background-color: #777;
+      .btn-rose:hover {
+        background: linear-gradient(135deg, #f43f5e, #ec4899);
+        transform: translateY(-1px);
+        box-shadow: 0 8px 24px rgba(244,63,94,0.38);
+      }
+      .btn-rose:active { transform: translateY(0); }
+
+      input { transition: border-color 0.2s, box-shadow 0.2s; }
+      input:focus {
+        outline: none;
+        border-color: rgba(251,113,133,0.55) !important;
+        box-shadow: 0 0 0 3px rgba(251,113,133,0.14);
+      }
+
+      .text-gradient {
+        background: linear-gradient(135deg, #fb7185, #f472b6, #c084fc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
       }
     </style>
   </head>
-  <body>
-    <div>
-      <h1>Passwort eingeben</h1>
-      <p>
-        Tipp: Das erste Land, wo wir gemeinsam Urlaub gemacht haben
-        (kleingeschrieben)
-      </p>
-      <input type="text" id="password" placeholder="Passwort" />
-      <button onclick="checkPassword()">Weiter</button>
+
+  <body class="min-h-screen bg-[#05030a] text-white flex items-center justify-center overflow-hidden relative">
+
+    <!-- Animated background blobs -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden">
+      <div class="blob absolute -top-48 -right-32 w-[420px] h-[420px] rounded-full opacity-[0.13]"
+           style="background: radial-gradient(circle, #be185d, transparent 68%);"></div>
+      <div class="blob d2 absolute -bottom-36 -left-36 w-96 h-96 rounded-full opacity-[0.11]"
+           style="background: radial-gradient(circle, #4338ca, transparent 68%);"></div>
+      <div class="blob d4 absolute top-1/2 left-1/2 w-72 h-72 rounded-full opacity-[0.08]"
+           style="background: radial-gradient(circle, #db2777, transparent 68%); transform: translate(-50%,-50%);"></div>
+    </div>
+
+    <!-- Login card -->
+    <div x-data="loginApp()" class="relative z-10 w-full max-w-sm mx-4">
+      <div class="glass rounded-3xl px-8 py-10 shadow-2xl">
+
+        <!-- Icon + heading -->
+        <div class="text-center mb-8">
+          <div class="float inline-block text-5xl mb-4" aria-hidden="true">💕</div>
+          <h1 style="font-family:'Cormorant Garamond',serif;font-weight:500;"
+              class="text-3xl text-white mb-2">Bebi's Dashboard</h1>
+          <p class="text-white/45 text-sm leading-relaxed">
+            Das erste Land, wo wir gemeinsam<br/>Urlaub gemacht haben
+          </p>
+          <p class="text-white/25 text-xs mt-1">(kleingeschrieben)</p>
+        </div>
+
+        <!-- Form -->
+        <div class="space-y-4">
+
+          <!-- Password input -->
+          <div class="relative">
+            <input
+              x-model="password"
+              :type="showPw ? 'text' : 'password'"
+              @keydown.enter="login()"
+              placeholder="Passwort eingeben…"
+              class="w-full rounded-xl px-5 py-4 text-white text-sm placeholder-white/28 border border-white/10"
+              style="background:rgba(255,255,255,0.07);"
+              autocomplete="current-password"
+              aria-label="Passwort"
+            />
+            <!-- Eye toggle -->
+            <button
+              @click="showPw = !showPw"
+              type="button"
+              class="absolute right-4 top-1/2 -translate-y-1/2 text-white/35 hover:text-white/65 transition-colors cursor-pointer"
+              :aria-label="showPw ? 'Passwort verbergen' : 'Passwort anzeigen'"
+            >
+              <!-- Eye open -->
+              <svg x-show="!showPw" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+              <!-- Eye closed -->
+              <svg x-show="showPw" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 4.411m0 0L21 21" />
+              </svg>
+            </button>
+          </div>
+
+          <!-- Error -->
+          <p
+            x-show="error"
+            x-text="error"
+            x-transition:enter="transition duration-200"
+            x-transition:enter-start="opacity-0 -translate-y-1"
+            x-transition:enter-end="opacity-100 translate-y-0"
+            class="text-rose-400 text-sm text-center"
+            role="alert"
+          ></p>
+
+          <!-- Submit -->
+          <button
+            @click="login()"
+            type="button"
+            class="btn-rose w-full py-4 rounded-xl text-white font-medium text-sm tracking-wide"
+          >
+            Weiter →
+          </button>
+        </div>
+      </div>
+
+      <p class="text-center text-white/18 text-xs mt-5">nur für uns zwei ❤️</p>
     </div>
 
     <script>
-      function checkPassword() {
-        const correctPassword = "slowenien"; //Passwort ändern
-        const input = document.getElementById("password").value;
-        if (input === correctPassword) {
-          window.location.href = "dashboard.html"; // Hauptseite verlinken
-        } else {
-          alert("Falsches Passwort!");
-        }
+      function loginApp() {
+        return {
+          password: '',
+          showPw:   false,
+          error:    '',
+          login() {
+            if (this.password === 'slowenien') {
+              window.location.href = 'dashboard.html';
+            } else {
+              this.error    = 'Falsches Passwort 💔';
+              this.password = '';
+              setTimeout(() => { this.error = ''; }, 3000);
+            }
+          },
+        };
       }
-      document
-        .getElementById("password")
-        .addEventListener("keydown", function (event) {
-          if (event.key === "Enter") {
-            checkPassword();
-          }
-        });
     </script>
   </body>
 </html>
